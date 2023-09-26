@@ -1,13 +1,16 @@
 import fastify from "fastify";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 import { createPgPool } from "./db/postgres";
+import { userRouter } from "./routes";
 
-dotenv.config()
+dotenv.config();
 
 const app = fastify({ logger: true });
 
+app.register(userRouter, { prefix: "/api/user" });
+
 (async () => {
-    await createPgPool();
-    app.listen({ port: 5000 });
-})()
+  await createPgPool();
+  app.listen({ port: 5000 });
+})();
