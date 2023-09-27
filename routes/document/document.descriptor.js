@@ -6,14 +6,6 @@ export const createDocumentDesc = {
     body: {
       name: { type: "string" },
     },
-    response: {
-      200: {
-        type: "object",
-      },
-      default: {
-        type: "string",
-      },
-    },
   },
 };
 
@@ -25,14 +17,6 @@ export const deleteDocumentDesc = {
     params: {
       id: { type: "number" },
     },
-    response: {
-      200: {
-        type: "object",
-      },
-      default: {
-        type: "string",
-      },
-    },
   },
 };
 
@@ -41,17 +25,6 @@ export const getDocumentsDesc = {
   url: "/api/user/whoami",
   schema: {
     tags: ["document"],
-    params: {
-      id: { type: "number" },
-    },
-    response: {
-      200: {
-        type: "object",
-      },
-      default: {
-        type: "string",
-      },
-    },
   },
 };
 
@@ -62,14 +35,6 @@ export const getDocumentDesc = {
     tags: ["document"],
     params: {
       id: { type: "number" },
-    },
-    response: {
-      200: {
-        type: "object",
-      },
-      default: {
-        type: "string",
-      },
     },
   },
 };
@@ -82,14 +47,6 @@ export const getDocumentWithParagraphsDesc = {
     params: {
       id: { type: "number" },
     },
-    response: {
-      200: {
-        type: "object",
-      },
-      default: {
-        type: "string",
-      },
-    },
   },
 };
 
@@ -100,14 +57,6 @@ export const copyDocumentDesc = {
     tags: ["document"],
     params: {
       id: { type: "number" },
-    },
-    response: {
-      200: {
-        type: "object",
-      },
-      default: {
-        type: "string",
-      },
     },
   },
 };
@@ -122,14 +71,6 @@ export const patchDocumentDesc = {
     },
     body: {
       name: { type: "string" },
-    },
-    response: {
-      200: {
-        type: "object",
-      },
-      default: {
-        type: "string",
-      },
     },
   },
 };

@@ -63,7 +63,10 @@ const app = fastify({ logger: true });
   });
   await app.register(multipart, { addToBody: true });
 
-  await app.use(["/api/document/(.*)", "/api/user/whoami"], authMiddleware);
+  await app.use(
+    ["/api/document/(.*)", "/api/user/whoami", "/api/document"],
+    authMiddleware,
+  );
 
   await app.register(userRouter, { prefix: "/api/user" });
   await app.register(documentRouter, { prefix: "/api/document" });
