@@ -1,5 +1,7 @@
+import { documentService, paragraphService, tagService } from "../../services";
+
 export function documentRouter(fastify, opts, done) {
-  fastify.post("", txtFileCheckerMiddleware, (req, res) => {
+  fastify.post("", (req, res) => {
     documentService.createDocument(req.body, req.files.file).then((result) => {
       res.status(200).send(result);
     });
