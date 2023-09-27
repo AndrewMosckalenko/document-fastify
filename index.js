@@ -37,7 +37,6 @@ const app = fastify({ logger: true });
   await app.register(swaggerUI, {
     routePrefix: "/doc",
     uiConfig: {
-      docExpansion: "full",
       deepLinking: false,
     },
     uiHooks: {
