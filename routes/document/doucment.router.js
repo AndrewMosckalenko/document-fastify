@@ -2,9 +2,13 @@ import { documentService, paragraphService, tagService } from "../../services";
 
 export function documentRouter(fastify, opts, done) {
   fastify.post("", (req, res) => {
-    documentService.createDocument(req.body, req.files.file).then((result) => {
-      res.status(200).send(result);
-    });
+    (async () => {
+      const response = await documentService.createDocument(
+        req.body,
+        req.body.file[0],
+      );
+      res.status(200).send(response);
+    })();
   });
 
   fastify.post("/:id", (req, res) => {

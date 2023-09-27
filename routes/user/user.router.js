@@ -2,7 +2,7 @@ import { authService } from "../../services";
 
 export function userRouter(fastify, opts, done) {
   fastify.get("/whoami", (request, reply) => {
-    reply.send("123123");
+    reply.send(request.raw.user);
   });
 
   fastify.post("/sign-in", (request, reply) => {

@@ -24,6 +24,7 @@ export const documentService = {
   },
 
   async createDocument(newDocument, file) {
+    console.log(file, newDocument);
     const createdDocument = await pgPool
       .getRepository(Document)
       .insert(newDocument);
@@ -41,7 +42,7 @@ export const documentService = {
       );
     }
 
-    return newDocument;
+    return createdDocument;
   },
 
   deleteDocument(id) {
