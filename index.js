@@ -29,6 +29,7 @@ const app = fastify({ logger: true });
           bearerAuth: {
             type: "http",
             scheme: "bearer",
+            bearerFormat: "JWT",
           },
         },
       },
@@ -53,11 +54,11 @@ const app = fastify({ logger: true });
       return swaggerObject;
     },
     transformSpecificationClone: true,
-    securityDefinitions: {
-      Authorization: {
-        type: "apiKey",
-        name: "Authorization",
-        in: "header",
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
       },
     },
   });
