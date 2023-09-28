@@ -24,7 +24,7 @@ Server application with API for work with documents. Document may load from file
 
 ### install modules
 
-npm i 
+npm i
 
 ### put env file
 
@@ -37,4 +37,3 @@ npm run start
 ## swagger
 
 {base-url}/doc
-

@@ -8,7 +8,9 @@ export const paragraphService = {
   },
 
   createParagraph(newParagraph) {
-    return pgPool.getRepository(Paragraph).insert(newParagraph);
+    if (newParagraph.content.length > 0)
+      return pgPool.getRepository(Paragraph).insert(newParagraph);
+    return null;
   },
 
   async copyParagraph(originParagraph) {
