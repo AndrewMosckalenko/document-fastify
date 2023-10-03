@@ -23,11 +23,11 @@ export const documentService = {
     return document;
   },
 
-  async createDocument(newDocument, file) {
+  async createDocument(id, newDocument, file) {
     console.log(file, newDocument);
     const createdDocument = await pgPool
       .getRepository(Document)
-      .insert(newDocument);
+      .insert({ ...newDocument, project: { id } });
     const newDocumentId = createdDocument.raw[0].id;
 
     if (file) {

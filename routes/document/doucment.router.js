@@ -1,4 +1,9 @@
-import { documentService, paragraphService, tagService } from "../../services";
+import {
+  paragraphTagService,
+  documentService,
+  paragraphService,
+  tagService,
+} from "../../services";
 import {
   createDocumentDesc,
   getDocumentsDesc,
@@ -8,38 +13,17 @@ import {
   getDocumentWithParagraphsDesc,
   copyDocumentDesc,
 } from "./document.descriptor";
-import { createTagDesc, deleteTagDesc } from "./tag.descriptor";
-import {
-  createParagraphDesc,
-  deleteParagraphDesc,
-  patchParagraphDesc,
-} from "./paragraph.descriptor";
 
 export function documentRouter(fastify, opts, done) {
-  fastify.post("", createDocumentDesc, (req, res) => {
+  fastify.post("/:id", createDocumentDesc, (req, res) => {
     (async () => {
       const response = await documentService.createDocument(
+        req.params["id"],
         req.body,
         req.body.file[0],
       );
       res.status(200).send(response);
     })();
-  });
-
-  fastify.post("/:id", createParagraphDesc, (req, res) => {
-    paragraphService
-      .createParagraph({ ...req.body, document: { id: req.params["id"] } })
-      .then((result) => {
-        res.status(200).send(result);
-      });
-  });
-
-  fastify.post("/:id/tag", createTagDesc, (req, res) => {
-    tagService
-      .createTag({ ...req.body, paragraph: { id: req.params["id"] } })
-      .then((result) => {
-        res.status(200).send(result);
-      });
   });
 
   fastify.post("/:id/copy", copyDocumentDesc, (req, res) => {
@@ -75,14 +59,6 @@ export function documentRouter(fastify, opts, done) {
       });
   });
 
-  fastify.patch("/paragraph/:id", patchParagraphDesc, (req, res) => {
-    paragraphService
-      .updateParagraph({ ...req.body, id: req.params["id"] })
-      .then((result) => {
-        res.status(200).send(result);
-      });
-  });
-
   fastify.delete("/:id", deleteDocumentDesc, (req, res) => {
     documentService
       .deleteDocument(req.params["id"])
@@ -90,18 +66,6 @@ export function documentRouter(fastify, opts, done) {
         res.status(200).send(result);
       })
       .catch((error) => errorHandler(res, error));
-  });
-
-  fastify.delete("/paragraph/:id", deleteParagraphDesc, (req, res) => {
-    paragraphService.deleteParagraph(req.params["id"]).then((result) => {
-      res.status(200).send(result);
-    });
-  });
-
-  fastify.delete("/:id/tag", deleteTagDesc, (req, res) => {
-    tagService.deleteTag(req.params["id"]).then((result) => {
-      res.status(200).send(result);
-    });
   });
 
   done();

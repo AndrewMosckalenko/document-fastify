@@ -7,7 +7,13 @@ import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 
 import { createPgPool } from "./db/postgres";
-import { documentRouter, userRouter } from "./routes";
+import {
+  documentRouter,
+  userRouter,
+  projectRouter,
+  tagRouter,
+  paragraphRouter,
+} from "./routes";
 import { authMiddleware } from "./middlewares";
 
 dotenv.config();
@@ -72,6 +78,8 @@ const app = fastify({ logger: true });
   await app.register(userRouter, { prefix: "/api/user" });
   await app.register(documentRouter, { prefix: "/api/document" });
   await app.register(projectRouter, { prefix: "/api/project" });
+  await app.register(tagRouter, { prefix: "/api/tag" });
+  await app.register(paragraphRouter, { prefix: "/api/paragraph" });
 
   await createPgPool();
 
