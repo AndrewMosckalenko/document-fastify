@@ -36,8 +36,8 @@ export const Paragraph = new EntitySchema({
         name: "document_id",
       },
     },
-    tags: {
-      target: "tags",
+    paragraphTags: {
+      target: "paragraph-tags",
       type: "one-to-many",
       inverseSide: "paragraph",
     },

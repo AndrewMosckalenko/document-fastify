@@ -71,6 +71,7 @@ const app = fastify({ logger: true });
 
   await app.register(userRouter, { prefix: "/api/user" });
   await app.register(documentRouter, { prefix: "/api/document" });
+  await app.register(projectRouter, { prefix: "/api/project" });
 
   await createPgPool();
 

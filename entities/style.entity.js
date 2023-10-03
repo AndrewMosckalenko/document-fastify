@@ -1,15 +1,15 @@
 import { EntitySchema } from "typeorm";
 
-export const Document = new EntitySchema({
-  name: "documents",
-  tableName: "documents",
+export const Style = new EntitySchema({
+  name: "styles",
+  tableName: "styles",
   columns: {
     id: {
       primary: true,
       type: "int",
       generated: true,
     },
-    name: {
+    color: {
       type: "text",
       nullable: false,
       default: "untitled",
@@ -17,17 +17,10 @@ export const Document = new EntitySchema({
     },
   },
   relations: {
-    project: {
-      target: "projects",
-      type: "many-to-one",
-      joinColumn: {
-        name: "project_id",
-      },
-    },
-    paragraphs: {
+    tag: {
       target: "paragraphs",
       type: "one-to-many",
-      inverseSide: "document",
+      inverseSide: "style",
     },
   },
 });

@@ -1,8 +1,8 @@
 import { EntitySchema } from "typeorm";
 
-export const Document = new EntitySchema({
-  name: "documents",
-  tableName: "documents",
+export const Project = new EntitySchema({
+  name: "projects",
+  tableName: "projects",
   columns: {
     id: {
       primary: true,
@@ -17,15 +17,8 @@ export const Document = new EntitySchema({
     },
   },
   relations: {
-    project: {
-      target: "projects",
-      type: "many-to-one",
-      joinColumn: {
-        name: "project_id",
-      },
-    },
-    paragraphs: {
-      target: "paragraphs",
+    documents: {
+      target: "documents",
       type: "one-to-many",
       inverseSide: "document",
     },

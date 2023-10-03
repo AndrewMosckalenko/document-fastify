@@ -17,12 +17,16 @@ export const Tag = new EntitySchema({
     },
   },
   relations: {
-    paragraph: {
-      target: "paragraphs",
+    paragraphTags: {
+      target: "paragraph-tags",
+      type: "one-to-many",
+      inverseSide: "tag",
+    },
+    project: {
+      target: "projects",
       type: "many-to-one",
-      onDelete: "CASCADE",
       joinColumn: {
-        name: "paragraph_id",
+        name: "project_id",
       },
     },
   },
