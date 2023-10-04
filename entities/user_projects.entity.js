@@ -25,5 +25,5 @@ export const userProjects = new EntitySchema({
         name: "project_id",
       },
     },
-  }
+  },
 });

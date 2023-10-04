@@ -19,7 +19,15 @@ const createPgPool = async () => {
     username: process.env.POSTGRES_DB_USER,
     password: process.env.POSTGRES_DB_PASS,
     database: process.env.POSTGRES_DB_NAME,
-    entities: [User, Document, Paragraph, Tag, ParagraphTag, Project, userProjects],
+    entities: [
+      User,
+      Document,
+      Paragraph,
+      Tag,
+      ParagraphTag,
+      Project,
+      userProjects,
+    ],
     logging: true,
     synchronize: true,
   });

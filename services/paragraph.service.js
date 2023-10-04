@@ -16,7 +16,7 @@ export const paragraphService = {
   async copyParagraph(originParagraph) {
     const newParagraph = await this.createParagraph(originParagraph);
     const newParagraphId = newParagraph.raw[0].id;
-    const createTagPromises = originParagraph.paragraphTags.map(localTag =>
+    const createTagPromises = originParagraph.paragraphTags.map((localTag) =>
       paragraphTagService.addTagForParagraph(localTag.tag.id, newParagraphId),
     );
 

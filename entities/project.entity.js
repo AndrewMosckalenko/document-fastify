@@ -23,14 +23,14 @@ export const Project = new EntitySchema({
       inverseSide: "project",
     },
     tags: {
-      target: 'tags',
-      type: 'one-to-many',
+      target: "tags",
+      type: "one-to-many",
       inverseSide: "project",
     },
     userProjects: {
-      target: 'user-projects',
-      type: 'one-to-many',
+      target: "user-projects",
+      type: "one-to-many",
       inverseSide: "project",
-    }
+    },
   },
 });

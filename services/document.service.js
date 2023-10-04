@@ -13,7 +13,12 @@ export const documentService = {
 
   async getDocumentWithParagraphsById(id) {
     const document = await pgPool.getRepository(Document).findOne({
-      relations: ["paragraphs", "paragraphs.paragraphTags", "paragraphs.paragraphTags.tag", 'project'],
+      relations: [
+        "paragraphs",
+        "paragraphs.paragraphTags",
+        "paragraphs.paragraphTags.tag",
+        "project",
+      ],
       where: { id },
     });
 

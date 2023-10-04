@@ -4,4 +4,4 @@ export * from "./user.entity";
 export * from "./tag.entity";
 export * from "./paragraph-tag.entity";
 export * from "./project.entity";
-export * from './user_projects.entity';
+export * from "./user_projects.entity";
