@@ -9,25 +9,33 @@ export const paragraphService = {
   },
 
   async createParagraph(newParagraph, fatherParagraphId = -1) {
-    let realFatherParagraphId = fatherParagraphId;
-
-    if (realFatherParagraphId < 0) {
-      const lastParagraph = await pgPool.getRepository(Paragraph).findOne({
+    console.log(newParagraph, fatherParagraphId);
+    let realFather = {};
+    if (fatherParagraphId < 0) {
+      realFather = await pgPool.getRepository(Paragraph).findOne({
         relations: ["document", "nextParagraph"],
         where: { document: newParagraph.document, nextParagraph: IsNull() },
       });
-      realFatherParagraphId = lastParagraph?.id || null;
+    } else {
+      realFather = await pgPool.getRepository(Paragraph).findOne({
+        relations: ["document", "nextParagraph"],
+        where: { document: newParagraph.document, id: fatherParagraphId },
+      });
     }
-
     if (newParagraph.content.length > 0) {
+      await pgPool
+        .getRepository(Paragraph)
+        .update({ id: realFather?.id }, { nextParagraph: IsNull() });
       const newParagraphId = await pgPool.getRepository(Paragraph).insert({
         ...newParagraph,
-        prevParagraph: { id: realFatherParagraphId },
+        nextParagraph: realFather?.nextParagraph?.id
+          ? { id: realFather?.nextParagraph?.id }
+          : null,
       });
       return pgPool
         .getRepository(Paragraph)
         .update(
-          { id: realFatherParagraphId },
+          { id: realFather?.id },
           { nextParagraph: { id: newParagraphId.raw[0].id } },
         );
     }

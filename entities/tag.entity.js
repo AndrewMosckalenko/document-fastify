@@ -25,6 +25,7 @@ export const Tag = new EntitySchema({
     project: {
       target: "projects",
       type: "many-to-one",
+      onDelete: "CASCADE",
       joinColumn: {
         name: "project_id",
       },

@@ -14,6 +14,7 @@ export const ParagraphTag = new EntitySchema({
     tag: {
       target: "tags",
       type: "many-to-one",
+      onDelete: "CASCADE",
       joinColumn: {
         name: "tag_id",
       },
@@ -21,6 +22,7 @@ export const ParagraphTag = new EntitySchema({
     paragraph: {
       target: "paragraphs",
       type: "many-to-one",
+      onDelete: "CASCADE",
       joinColumn: {
         name: "paragraph_id",
       },

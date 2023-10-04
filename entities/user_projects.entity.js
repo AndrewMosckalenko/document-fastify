@@ -14,6 +14,7 @@ export const userProjects = new EntitySchema({
     user: {
       target: "users",
       type: "many-to-one",
+      onDelete: "CASCADE",
       joinColumn: {
         name: "user_id",
       },
@@ -21,6 +22,7 @@ export const userProjects = new EntitySchema({
     project: {
       target: "projects",
       type: "many-to-one",
+      onDelete: "CASCADE",
       joinColumn: {
         name: "project_id",
       },

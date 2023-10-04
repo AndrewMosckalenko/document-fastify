@@ -44,6 +44,7 @@ export const Paragraph = new EntitySchema({
     nextParagraph: {
       target: "paragraphs",
       type: "one-to-one",
+      onDelete: "CASCADE",
       joinColumn: {
         name: "next_paragraph_id",
       },

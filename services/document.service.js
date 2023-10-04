@@ -17,19 +17,23 @@ export const documentService = {
         "paragraphs",
         "paragraphs.paragraphTags",
         "paragraphs.paragraphTags.tag",
+        "paragraphs.nextParagraph",
+        "paragraphs.prevParagraph",
         "project",
       ],
       where: { id },
     });
 
-    let currentParagraph = document.paragraphs.filter(
+    let currentParagraph = document.paragraphs.find(
       (paragraph) => !paragraph.prevParagraph,
     );
     const paragraphs = [];
 
     while (currentParagraph) {
       paragraphs.push(currentParagraph);
-      currentParagraph = currentParagraph.nextParagraph;
+      currentParagraph = document.paragraphs.find(
+        (paragraph) => currentParagraph.nextParagraph?.id === paragraph.id,
+      );
     }
 
     return { ...document, paragraphs };
