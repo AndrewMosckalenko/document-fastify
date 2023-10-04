@@ -29,4 +29,11 @@ export const User = new EntitySchema({
       type: "text",
     },
   },
+  relations: {
+    userProjects: {
+      target: 'user-projects',
+      type: 'one-to-many',
+      inverseSide: "user",
+    }
+  }
 });

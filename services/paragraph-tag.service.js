@@ -5,7 +5,7 @@ export const paragraphTagService = {
   addTagForParagraph(tagId, paragraphId) {
     return pgPool
       .getRepository(ParagraphTag)
-      .insert({ tag: { id, tagId }, paragraph: { id: paragraphId } });
+      .insert({ tag: { id: tagId }, paragraph: { id: paragraphId } });
   },
 
   deleteTagFromParagraph(id) {

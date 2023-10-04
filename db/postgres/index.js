@@ -6,6 +6,7 @@ import {
   Tag,
   User,
   Project,
+  userProjects,
 } from "../../entities";
 
 let pgPool;
@@ -18,7 +19,7 @@ const createPgPool = async () => {
     username: process.env.POSTGRES_DB_USER,
     password: process.env.POSTGRES_DB_PASS,
     database: process.env.POSTGRES_DB_NAME,
-    entities: [User, Document, Paragraph, Tag, ParagraphTag, Project],
+    entities: [User, Document, Paragraph, Tag, ParagraphTag, Project, userProjects],
     logging: true,
     synchronize: true,
   });

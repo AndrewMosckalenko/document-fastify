@@ -13,7 +13,7 @@ export const documentService = {
 
   async getDocumentWithParagraphsById(id) {
     const document = await pgPool.getRepository(Document).findOne({
-      relations: ["paragraphs", "paragraphs.tags"],
+      relations: ["paragraphs", "paragraphs.paragraphTags", "paragraphs.paragraphTags.tag", 'project'],
       where: { id },
     });
 
@@ -24,7 +24,6 @@ export const documentService = {
   },
 
   async createDocument(id, newDocument, file) {
-    console.log(file, newDocument);
     const createdDocument = await pgPool
       .getRepository(Document)
       .insert({ ...newDocument, project: { id } });
@@ -58,8 +57,7 @@ export const documentService = {
   async copyDocument(id) {
     const originDocument = await this.getDocumentWithParagraphsById(id);
 
-    const newDocument = await this.createDocument({
-      ...originDocument,
+    const newDocument = await this.createDocument(originDocument.project.id, {
       name: originDocument.name + "-copy",
     });
     const newDocumentId = newDocument.raw[0].id;

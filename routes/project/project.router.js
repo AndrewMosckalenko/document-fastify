@@ -2,13 +2,13 @@ import { projectService } from "../../services";
 
 export function projectRouter(fastify, opt, done) {
   fastify.post("/", (req, res) => {
-    projectService.createProject(req.body).then((result) => {
+    projectService.createProject(req.body, req.raw.user).then((result) => {
       res.send(result);
     });
   });
 
-  fastify.get("/", (_, res) => {
-    projectService.getProjects().then((result) => {
+  fastify.get("/", (req, res) => {
+    projectService.getProjects(req.raw.user.id).then((result) => {
       res.send(result);
     });
   });

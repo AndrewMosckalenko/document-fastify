@@ -20,7 +20,17 @@ export const Project = new EntitySchema({
     documents: {
       target: "documents",
       type: "one-to-many",
-      inverseSide: "document",
+      inverseSide: "project",
     },
+    tags: {
+      target: 'tags',
+      type: 'one-to-many',
+      inverseSide: "project",
+    },
+    userProjects: {
+      target: 'user-projects',
+      type: 'one-to-many',
+      inverseSide: "project",
+    }
   },
 });

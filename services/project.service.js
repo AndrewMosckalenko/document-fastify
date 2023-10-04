@@ -1,9 +1,10 @@
 import { pgPool } from "../db/postgres";
-import { Project } from "../entities";
+import { Project, userProjects } from "../entities";
 
 export const projectService = {
-  createProject(newProject) {
-    return pgPool.getRepository(Project).insert(newProject);
+  async createProject(newProject, user) {
+    const newProjectId = await pgPool.getRepository(Project).insert(newProject);
+    return pgPool.getRepository(userProjects).insert({user: {id: user.id}, project: {id: newProjectId.raw[0].id}})
   },
   deleteProject(id) {
     return pgPool.getRepository(Project).delete({ id });
@@ -13,11 +14,14 @@ export const projectService = {
   },
   getProject(id) {
     return pgPool.getRepository(Project).findOne({
-      id,
-      relations: ["documents"],
+      where: { id },
+      relations: ["documents", "tags"],
     });
   },
-  getProjects() {
-    return pgPool.getRepository(Project).find();
+  getProjects(userId) {
+    return pgPool.getRepository(Project).find({
+      relations: ['userProjects', 'userProjects.user'],
+      where: { userProjects: { user: { id: userId }}}
+    });
   },
 };

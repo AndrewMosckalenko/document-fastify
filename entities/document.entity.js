@@ -20,6 +20,7 @@ export const Document = new EntitySchema({
     project: {
       target: "projects",
       type: "many-to-one",
+      onDelete: "CASCADE",
       joinColumn: {
         name: "project_id",
       },

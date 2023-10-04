@@ -71,7 +71,7 @@ const app = fastify({ logger: true });
   await app.register(multipart, { addToBody: true });
 
   await app.use(
-    ["/api/document/(.*)", "/api/user/whoami", "/api/document"],
+    ["/api/document/(.*)", "/api/user/whoami", "/api/document", '/api/project', '/api/project/(.*)'],
     authMiddleware,
   );
 
