@@ -77,14 +77,15 @@ export const documentService = {
     });
     const newDocumentId = newDocument.raw[0].id;
 
-    const createParargraphPromises = originDocument.paragraphs.map(
-      (paragraph) =>
-        paragraphService.copyParagraph({
-          ...paragraph,
-          document: { id: newDocumentId },
-        }),
-    );
+    for (const paragraph of originDocument.paragraphs) {
+      await paragraphService.copyParagraph({
+        ...paragraph,
+        document: { id: newDocumentId },
+        nextParagraph: null,
+        prevParagraph: null,
+      });
+    }
 
-    return Promise.all(createParargraphPromises);
+    return newDocument;
   },
 };

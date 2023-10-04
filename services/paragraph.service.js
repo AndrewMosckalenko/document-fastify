@@ -23,22 +23,35 @@ export const paragraphService = {
       });
     }
     if (newParagraph.content.length > 0) {
-      await pgPool
-        .getRepository(Paragraph)
-        .update({ id: realFather?.id }, { nextParagraph: IsNull() });
+      console.log(
+        realFather,
+        "gsjkdgfkjsgdkjfgksdfgkjsgdfkjsgdkfgskjdfgkjsdfkjsgdfjkgsfdkj",
+      );
+      if (realFather?.nextParagraph?.id) {
+        await pgPool
+          .getRepository(Paragraph)
+          .update({ id: realFather?.id }, { nextParagraph: IsNull() });
+        const newParagraphId = await pgPool.getRepository(Paragraph).insert({
+          ...newParagraph,
+          nextParagraph: { id: realFather?.nextParagraph?.id },
+        });
+
+        return newParagraphId;
+      }
+
       const newParagraphId = await pgPool.getRepository(Paragraph).insert({
         ...newParagraph,
-        nextParagraph: realFather?.nextParagraph?.id
-          ? { id: realFather?.nextParagraph?.id }
-          : null,
       });
-      return pgPool
+      await pgPool
         .getRepository(Paragraph)
         .update(
           { id: realFather?.id },
           { nextParagraph: { id: newParagraphId.raw[0].id } },
         );
+
+      return newParagraphId;
     }
+
     return null;
   },
 
