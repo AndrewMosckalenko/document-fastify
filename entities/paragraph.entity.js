@@ -41,5 +41,17 @@ export const Paragraph = new EntitySchema({
       type: "one-to-many",
       inverseSide: "paragraph",
     },
+    nextParagraph: {
+      target: "paragraphs",
+      type: "one-to-one",
+      joinColumn: {
+        name: "next_paragraph_id",
+      },
+    },
+    prevParagraph: {
+      target: "paragraphs",
+      type: "one-to-one",
+      inverseSide: "nextParagraph",
+    },
   },
 });

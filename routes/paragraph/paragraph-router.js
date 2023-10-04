@@ -3,7 +3,7 @@ import { paragraphService, paragraphTagService } from "../../services";
 export function paragraphRouter(fastify, opts, done) {
   fastify.post("/:id", (req, res) => {
     paragraphService
-      .createParagraph({ ...req.body, document: { id: req.params["id"] } })
+      .createParagraph({ ...req.body, document: { id: req.params["id"] } }, req.body.nextParagraphId)
       .then((result) => {
         res.send(result);
       });

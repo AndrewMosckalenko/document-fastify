@@ -22,10 +22,17 @@ export const documentService = {
       where: { id },
     });
 
-    document.paragraphs.sort((paragraph1, paragraph2) =>
-      paragraph1.serial > paragraph2.serial ? 1 : -1,
+    let currentParagraph = document.paragraphs.filter(
+      (paragraph) => !paragraph.prevParagraph,
     );
-    return document;
+    const paragraphs = [];
+
+    while (currentParagraph) {
+      paragraphs.push(currentParagraph);
+      currentParagraph = currentParagraph.nextParagraph;
+    }
+
+    return { ...document, paragraphs };
   },
 
   async createDocument(id, newDocument, file) {
@@ -36,14 +43,13 @@ export const documentService = {
 
     if (file) {
       const newParagraphs = file.data.toString().split("\n");
-      newParagraphs.map((content, index) =>
-        paragraphService.createParagraph({
+      for (const content of newParagraphs) {
+        await paragraphService.createParagraph({
           content,
-          name: `paragraph-${index}`,
-          document: newDocumentId,
-          serial: index,
-        }),
-      );
+          name: `paragraph`,
+          document: { id: newDocumentId },
+        });
+      }
     }
 
     return createdDocument;
