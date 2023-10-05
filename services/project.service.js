@@ -1,5 +1,7 @@
 import { pgPool } from "../db/postgres";
 import { Project, userProjects } from "../entities";
+import { HttpExceprtion } from "../errors";
+import { simpleDocument, simpleProject, simpleTag } from "../utils";
 
 export const projectService = {
   async createProject(newProject, user) {
@@ -26,5 +28,47 @@ export const projectService = {
       relations: ["userProjects", "userProjects.user"],
       where: { userProjects: { user: { id: userId } } },
     });
+  },
+
+  async getProjectSummary(id) {
+    const project = await pgPool.getRepository(Project).findOne({
+      relations: [
+        "documents",
+        "tags",
+        "documents.paragraphs",
+        "documents.paragraphs.paragraphTags",
+        "documents.paragraphs.paragraphTags.tag",
+      ],
+      where: { id },
+    });
+
+    if (!project) throw new HttpExceprtion("Bad request", 400);
+
+    const documentTagTable = {};
+    for (const document of project.documents) {
+      documentTagTable[document.id] = {};
+      for (const tag of project.tags) {
+        documentTagTable[document.id][tag.id] = 0;
+      }
+      for (const paragraph of document.paragraphs) {
+        for (const paragraphTag of paragraph.paragraphTags) {
+          documentTagTable[document.id][paragraphTag.tag.id] += 1;
+        }
+      }
+    }
+
+    const summary = {
+      project: simpleProject(project),
+      header: { tags: project.tags.map(simpleTag) },
+      table: project.documents.map((document) => ({
+        document: simpleDocument(document),
+        tags: project.tags.map((tag) => ({
+          tag: simpleTag(tag),
+          count: documentTagTable[document.id][tag.id],
+        })),
+      })),
+    };
+
+    return summary;
   },
 };
