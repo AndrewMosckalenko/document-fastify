@@ -31,5 +31,11 @@ export function projectRouter(fastify, opt, done) {
     });
   });
 
+  fastify.get("/summary/:id", (req, res) => {
+    projectService.getProjectSummary(req.params["id"]).then((result) => {
+      res.send(result);
+    });
+  });
+
   done();
 }

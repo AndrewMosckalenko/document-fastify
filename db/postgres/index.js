@@ -6,12 +6,20 @@ import {
   Tag,
   User,
   Project,
-  userProjects,
+  UserProject,
 } from "../../entities";
 
-let pgPool;
+export let pgPool;
 
-const createPgPool = async () => {
+export let projectRepository;
+export let documentRepository;
+export let tagRepository;
+export let paragraphRepository;
+export let userRepository;
+export let paragraphTagRepository;
+export let userProjectRepository;
+
+export const createPgPool = async () => {
   pgPool = new DataSource({
     type: "postgres",
     host: process.env.POSTGRES_DB_HOST,
@@ -26,7 +34,7 @@ const createPgPool = async () => {
       Tag,
       ParagraphTag,
       Project,
-      userProjects,
+      UserProject,
     ],
     logging: true,
     synchronize: true,
@@ -36,10 +44,15 @@ const createPgPool = async () => {
     .initialize()
     .then(() => {
       console.log("Data Source has been initialized!");
+      projectRepository = pgPool.getRepository(Project);
+      documentRepository = pgPool.getRepository(Document);
+      tagRepository = pgPool.getRepository(Tag);
+      paragraphRepository = pgPool.getRepository(Paragraph);
+      userRepository = pgPool.getRepository(User);
+      userProjectRepository = pgPool.getRepository(UserProject);
+      paragraphTagRepository = pgPool.getRepository(ParagraphTag);
     })
     .catch((err) => {
       console.error("Error during Data Source initialization:", err);
     });
 };
-
-export { pgPool, createPgPool };

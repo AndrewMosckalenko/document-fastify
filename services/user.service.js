@@ -1,12 +1,11 @@
-import { pgPool } from "../db/postgres";
-import { User } from "../entities";
+import { userRepository } from "../db/postgres";
 
 export const userService = {
   getUserByEmail(email) {
-    return pgPool.getRepository(User).findOneBy({ email });
+    return userRepository.findOneBy({ email });
   },
 
   createUser(newUser) {
-    return pgPool.getRepository(User).insert(newUser);
+    return userRepository.insert(newUser);
   },
 };
