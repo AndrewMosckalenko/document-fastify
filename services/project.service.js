@@ -1,74 +1,66 @@
-import { pgPool } from "../db/postgres";
-import { Project, userProjects } from "../entities";
-import { HttpExceprtion } from "../errors";
-import { simpleDocument, simpleProject, simpleTag } from "../utils";
+import { projectRepository, userProjectRepository } from "../db/postgres";
+import { tagService } from "../services";
 
 export const projectService = {
   async createProject(newProject, user) {
-    const newProjectId = await pgPool.getRepository(Project).insert(newProject);
-    return pgPool.getRepository(userProjects).insert({
+    const newProjectId = await projectRepository.insert(newProject);
+    return userProjectRepository.insert({
       user: { id: user.id },
       project: { id: newProjectId.raw[0].id },
     });
   },
   deleteProject(id) {
-    return pgPool.getRepository(Project).delete({ id });
+    return projectRepository.delete({ id });
   },
   updateProject(id, updatedProject) {
-    return pgPool.getRepository(Project).update({ id }, updatedProject);
+    return projectRepository.update({ id }, updatedProject);
   },
   getProject(id) {
-    return pgPool.getRepository(Project).findOne({
+    return projectRepository.findOne({
       where: { id },
       relations: ["documents", "tags"],
     });
   },
   getProjects(userId) {
-    return pgPool.getRepository(Project).find({
+    return projectRepository.find({
       relations: ["userProjects", "userProjects.user"],
       where: { userProjects: { user: { id: userId } } },
     });
   },
 
   async getProjectSummary(id) {
-    const project = await pgPool.getRepository(Project).findOne({
-      relations: [
-        "documents",
-        "tags",
-        "documents.paragraphs",
-        "documents.paragraphs.paragraphTags",
-        "documents.paragraphs.paragraphTags.tag",
-      ],
-      where: { id },
-    });
+    const header = await tagService.getTagByProjectId(id);
+    const table = await projectRepository.query(
+      'SELECT\
+      jsonb_build_object(\
+        \'id\', document_id,\
+        \'name\', document_name\
+      ) as document,\
+      jsonb_agg(\
+        jsonb_build_object(\
+          \'tag\', jsonb_build_object(\
+            \'id\', tag_id,\
+            \'title\', tag_title\
+          ),\
+          \'count\', paragraps_count\
+        )\
+      ) as tags\
+      FROM (SELECT\
+        documents.id as document_id,\
+        documents.name as document_name,\
+        tags.id AS tag_id,\
+        tags.title AS tag_title,\
+        COUNT(paragraphs.id) as paragraps_count\
+      FROM documents\
+      full outer join "tags" on "tags"."project_id" = "documents"."project_id"\
+      left join "paragraph-tags" on "paragraph-tags"."tag_id" = "tags"."id"\
+      left join "paragraphs" on "paragraphs"."id" = "paragraph-tags"."paragraph_id"\
+      where "documents"."project_id" = $1\
+      group by documents.id, tags.id) t\
+      group by document_id, document_name;',
+      [id],
+    );
 
-    if (!project) throw new HttpExceprtion("Bad request", 400);
-
-    const documentTagTable = {};
-    for (const document of project.documents) {
-      documentTagTable[document.id] = {};
-      for (const tag of project.tags) {
-        documentTagTable[document.id][tag.id] = 0;
-      }
-      for (const paragraph of document.paragraphs) {
-        for (const paragraphTag of paragraph.paragraphTags) {
-          documentTagTable[document.id][paragraphTag.tag.id] += 1;
-        }
-      }
-    }
-
-    const summary = {
-      project: simpleProject(project),
-      header: { tags: project.tags.map(simpleTag) },
-      table: project.documents.map((document) => ({
-        document: simpleDocument(document),
-        tags: project.tags.map((tag) => ({
-          tag: simpleTag(tag),
-          count: documentTagTable[document.id][tag.id],
-        })),
-      })),
-    };
-
-    return summary;
+    return { table, header };
   },
 };

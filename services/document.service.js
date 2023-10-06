@@ -1,18 +1,18 @@
-import { pgPool } from "../db/postgres";
-import { Document } from "../entities";
+import { documentRepository } from "../db/postgres";
+
 import { paragraphService } from "./paragraph.service";
 
 export const documentService = {
   getDocuments() {
-    return pgPool.getRepository(Document).find();
+    return documentRepository.find();
   },
 
   getDocumentById(id) {
-    return pgPool.getRepository(Document).findOneBy({ id });
+    return documentRepository.findOneBy({ id });
   },
 
   async getDocumentWithParagraphsById(id) {
-    const document = await pgPool.getRepository(Document).findOne({
+    const document = await documentRepository.findOne({
       relations: [
         "paragraphs",
         "paragraphs.paragraphTags",
@@ -40,9 +40,10 @@ export const documentService = {
   },
 
   async createDocument(id, newDocument, file) {
-    const createdDocument = await pgPool
-      .getRepository(Document)
-      .insert({ ...newDocument, project: { id } });
+    const createdDocument = await documentRepository.insert({
+      ...newDocument,
+      project: { id },
+    });
     const newDocumentId = createdDocument.raw[0].id;
 
     if (file) {
@@ -60,13 +61,11 @@ export const documentService = {
   },
 
   deleteDocument(id) {
-    return pgPool.getRepository(Document).delete({ id });
+    return documentRepository.delete({ id });
   },
 
   updateDocument(updateDocument) {
-    return pgPool
-      .getRepository(Document)
-      .update({ id: updateDocument.id }, updateDocument);
+    return documentRepository.update({ id: updateDocument.id }, updateDocument);
   },
 
   async copyDocument(id) {

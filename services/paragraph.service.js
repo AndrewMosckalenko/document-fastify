@@ -1,37 +1,34 @@
 import { IsNull } from "typeorm";
-import { pgPool } from "../db/postgres";
-import { Paragraph } from "../entities";
+
+import { paragraphRepository } from "../db/postgres";
+
 import { paragraphTagService } from "./paragraph-tag.service";
 
 export const paragraphService = {
   getParagraph(id) {
-    return pgPool.getRepository(Paragraph).findOneBy({ id });
+    return paragraphRepository.findOneBy({ id });
   },
 
   async createParagraph(newParagraph, fatherParagraphId = -1) {
-    console.log(newParagraph, fatherParagraphId);
     let realFather = {};
     if (fatherParagraphId < 0) {
-      realFather = await pgPool.getRepository(Paragraph).findOne({
+      realFather = await paragraphRepository.findOne({
         relations: ["document", "nextParagraph"],
         where: { document: newParagraph.document, nextParagraph: IsNull() },
       });
     } else {
-      realFather = await pgPool.getRepository(Paragraph).findOne({
+      realFather = await paragraphRepository.findOne({
         relations: ["document", "nextParagraph"],
         where: { document: newParagraph.document, id: fatherParagraphId },
       });
     }
     if (newParagraph.content.length > 0) {
-      console.log(
-        realFather,
-        "gsjkdgfkjsgdkjfgksdfgkjsgdfkjsgdkfgskjdfgkjsdfkjsgdfjkgsfdkj",
-      );
       if (realFather?.nextParagraph?.id) {
-        await pgPool
-          .getRepository(Paragraph)
-          .update({ id: realFather?.id }, { nextParagraph: IsNull() });
-        const newParagraphId = await pgPool.getRepository(Paragraph).insert({
+        await paragraphRepository.update(
+          { id: realFather?.id },
+          { nextParagraph: IsNull() },
+        );
+        const newParagraphId = await paragraphRepository.insert({
           ...newParagraph,
           nextParagraph: { id: realFather?.nextParagraph?.id },
         });
@@ -39,15 +36,13 @@ export const paragraphService = {
         return newParagraphId;
       }
 
-      const newParagraphId = await pgPool.getRepository(Paragraph).insert({
+      const newParagraphId = await paragraphRepository.insert({
         ...newParagraph,
       });
-      await pgPool
-        .getRepository(Paragraph)
-        .update(
-          { id: realFather?.id },
-          { nextParagraph: { id: newParagraphId.raw[0].id } },
-        );
+      await paragraphRepository.update(
+        { id: realFather?.id },
+        { nextParagraph: { id: newParagraphId.raw[0].id } },
+      );
 
       return newParagraphId;
     }
@@ -66,12 +61,13 @@ export const paragraphService = {
   },
 
   updateParagraph(updatedParargraph) {
-    return pgPool
-      .getRepository(Paragraph)
-      .update({ id: updatedParargraph.id }, updatedParargraph);
+    return paragraphRepository.update(
+      { id: updatedParargraph.id },
+      updatedParargraph,
+    );
   },
 
   deleteParagraph(id) {
-    return pgPool.getRepository(Paragraph).delete({ id });
+    return paragraphRepository.delete({ id });
   },
 };

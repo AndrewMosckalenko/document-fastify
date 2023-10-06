@@ -75,8 +75,8 @@ const app = fastify({ logger: true });
       "/api/document/(.*)",
       "/api/user/whoami",
       "/api/document",
-      "/api/project",
-      "/api/project/(.*)",
+      //"/api/project",
+      //"/api/project/(.*)",
     ],
     authMiddleware,
   );

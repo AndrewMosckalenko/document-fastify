@@ -1,14 +1,14 @@
-import { pgPool } from "../db/postgres";
-import { ParagraphTag } from "../entities";
+import { paragraphTagRepository } from "../db/postgres";
 
 export const paragraphTagService = {
   addTagForParagraph(tagId, paragraphId) {
-    return pgPool
-      .getRepository(ParagraphTag)
-      .insert({ tag: { id: tagId }, paragraph: { id: paragraphId } });
+    return paragraphTagRepository.insert({
+      tag: { id: tagId },
+      paragraph: { id: paragraphId },
+    });
   },
 
   deleteTagFromParagraph(id) {
-    return pgPool.getRepository(ParagraphTag).delete({ id });
+    return paragraphTagRepository.delete({ id });
   },
 };

@@ -1,12 +1,15 @@
-import { pgPool } from "../db/postgres";
-import { Tag } from "../entities";
+import { tagRepository } from "../db/postgres";
 
 export const tagService = {
   createTag(newTag) {
-    return pgPool.getRepository(Tag).insert(newTag);
+    return tagRepository.insert(newTag);
   },
 
   deleteTag(id) {
-    return pgPool.getRepository(Tag).delete({ id });
+    return tagRepository.delete({ id });
+  },
+
+  getTagByProjectId(id) {
+    return tagRepository.findBy({ project: { id } });
   },
 };
