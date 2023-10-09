@@ -1,6 +1,13 @@
 import { EntitySchema } from "typeorm";
+import { ITag } from "./tag.entity";
 
-export const Style = new EntitySchema({
+export interface IStyle {
+  id: number;
+  color: string;
+  tag: ITag[];
+}
+
+export const Style = new EntitySchema<IStyle>({
   name: "styles",
   tableName: "styles",
   columns: {
@@ -13,7 +20,6 @@ export const Style = new EntitySchema({
       type: "text",
       nullable: false,
       default: "untitled",
-      type: "text",
     },
   },
   relations: {

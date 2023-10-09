@@ -44,29 +44,23 @@ const app = fastify({ logger: true });
   await app.register(swaggerUI, {
     routePrefix: "/doc",
     uiConfig: {
+      docExpansion: "full",
       deepLinking: false,
     },
     uiHooks: {
-      onRequest: function (request, reply, next) {
+      onRequest: function (_request, _reply, next) {
         next();
       },
-      preHandler: function (request, reply, next) {
+      preHandler: function (_request, _reply, next) {
         next();
       },
     },
     staticCSP: true,
     transformStaticCSP: (header) => header,
-    transformSpecification: (swaggerObject, request, reply) => {
+    transformSpecification: (swaggerObject, _request, _reply) => {
       return swaggerObject;
     },
     transformSpecificationClone: true,
-    securitySchemes: {
-      bearerAuth: {
-        type: "http",
-        scheme: "bearer",
-        bearerFormat: "JWT",
-      },
-    },
   });
   await app.register(multipart, { addToBody: true });
 
@@ -75,8 +69,8 @@ const app = fastify({ logger: true });
       "/api/document/(.*)",
       "/api/user/whoami",
       "/api/document",
-      //"/api/project",
-      //"/api/project/(.*)",
+      "/api/project",
+      "/api/project/(.*)",
     ],
     authMiddleware,
   );

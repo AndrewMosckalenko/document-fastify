@@ -1,17 +1,20 @@
 import { documentRepository } from "../db/postgres";
-
 import { paragraphService } from "./paragraph.service";
+import { HttpExceprtion } from "../errors";
+import { IParagraph } from "../entities";
+
+import { CreateDocumentDTO, UpdateDocumentDTO } from "./dtos/document";
 
 export const documentService = {
   getDocuments() {
     return documentRepository.find();
   },
 
-  getDocumentById(id) {
+  getDocumentById(id: number) {
     return documentRepository.findOneBy({ id });
   },
 
-  async getDocumentWithParagraphsById(id) {
+  async getDocumentWithParagraphsById(id: number) {
     const document = await documentRepository.findOne({
       relations: [
         "paragraphs",
@@ -24,22 +27,25 @@ export const documentService = {
       where: { id },
     });
 
+    if (!document) throw new HttpExceprtion("Document not found", 400);
+
     let currentParagraph = document.paragraphs.find(
-      (paragraph) => !paragraph.prevParagraph,
+      (paragraph: IParagraph) => !paragraph.prevParagraph,
     );
     const paragraphs = [];
 
     while (currentParagraph) {
       paragraphs.push(currentParagraph);
       currentParagraph = document.paragraphs.find(
-        (paragraph) => currentParagraph.nextParagraph?.id === paragraph.id,
+        (paragraph: IParagraph) =>
+          currentParagraph?.nextParagraph?.id === paragraph.id,
       );
     }
 
     return { ...document, paragraphs };
   },
 
-  async createDocument(id, newDocument, file) {
+  async createDocument(id: number, newDocument: CreateDocumentDTO, file: any) {
     const createdDocument = await documentRepository.insert({
       ...newDocument,
       project: { id },
@@ -60,28 +66,30 @@ export const documentService = {
     return createdDocument;
   },
 
-  deleteDocument(id) {
+  deleteDocument(id: number) {
     return documentRepository.delete({ id });
   },
 
-  updateDocument(updateDocument) {
+  updateDocument(updateDocument: UpdateDocumentDTO) {
     return documentRepository.update({ id: updateDocument.id }, updateDocument);
   },
 
-  async copyDocument(id) {
+  async copyDocument(id: number) {
     const originDocument = await this.getDocumentWithParagraphsById(id);
 
-    const newDocument = await this.createDocument(originDocument.project.id, {
-      name: originDocument.name + "-copy",
-    });
+    const newDocument = await this.createDocument(
+      originDocument.project.id,
+      {
+        name: originDocument.name + "-copy",
+      },
+      null,
+    );
     const newDocumentId = newDocument.raw[0].id;
 
     for (const paragraph of originDocument.paragraphs) {
       await paragraphService.copyParagraph({
         ...paragraph,
         document: { id: newDocumentId },
-        nextParagraph: null,
-        prevParagraph: null,
       });
     }
 

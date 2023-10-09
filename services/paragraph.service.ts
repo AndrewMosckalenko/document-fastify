@@ -1,16 +1,21 @@
 import { IsNull } from "typeorm";
 
 import { paragraphRepository } from "../db/postgres";
-
 import { paragraphTagService } from "./paragraph-tag.service";
+import { IParagraph, IParagraphTag } from "../entities";
+
+import { CreateParagraphDTO, UpdateParagraphDTO } from "./dtos/paragraph";
 
 export const paragraphService = {
-  getParagraph(id) {
+  getParagraph(id: any) {
     return paragraphRepository.findOneBy({ id });
   },
 
-  async createParagraph(newParagraph, fatherParagraphId = -1) {
-    let realFather = {};
+  async createParagraph(
+    newParagraph: CreateParagraphDTO,
+    fatherParagraphId: number = -1,
+  ) {
+    let realFather: IParagraph | null;
     if (fatherParagraphId < 0) {
       realFather = await paragraphRepository.findOne({
         relations: ["document", "nextParagraph"],
@@ -26,7 +31,7 @@ export const paragraphService = {
       if (realFather?.nextParagraph?.id) {
         await paragraphRepository.update(
           { id: realFather?.id },
-          { nextParagraph: IsNull() },
+          { nextParagraph: undefined },
         );
         const newParagraphId = await paragraphRepository.insert({
           ...newParagraph,
@@ -50,24 +55,25 @@ export const paragraphService = {
     return null;
   },
 
-  async copyParagraph(originParagraph) {
+  async copyParagraph(originParagraph: CreateParagraphDTO) {
     const newParagraph = await this.createParagraph(originParagraph);
-    const newParagraphId = newParagraph.raw[0].id;
-    const createTagPromises = originParagraph.paragraphTags.map((localTag) =>
-      paragraphTagService.addTagForParagraph(localTag.tag.id, newParagraphId),
-    );
+    const newParagraphId = newParagraph?.raw[0].id;
+    const createTagPromises =
+      originParagraph.paragraphTags?.map((localTag: IParagraphTag) =>
+        paragraphTagService.addTagForParagraph(localTag.tag.id, newParagraphId),
+      ) || [];
 
     return Promise.all(createTagPromises);
   },
 
-  updateParagraph(updatedParargraph) {
+  updateParagraph(updatedParargraph: UpdateParagraphDTO) {
     return paragraphRepository.update(
       { id: updatedParargraph.id },
       updatedParargraph,
     );
   },
 
-  deleteParagraph(id) {
+  deleteParagraph(id: number) {
     return paragraphRepository.delete({ id });
   },
 };

@@ -1,4 +1,4 @@
-export function uploadFileMiddleware(req, res, next) {
+export function uploadFileMiddleware(req: any, res: any, next: any) {
   (async () => {
     if (req.file) {
       const data = await req.file();

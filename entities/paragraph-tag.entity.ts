@@ -1,6 +1,8 @@
 import { EntitySchema } from "typeorm";
+import { IParagraph } from "./paragraph.entity";
+import { ITag } from "./tag.entity";
 
-export const ParagraphTag = new EntitySchema({
+export const ParagraphTag = new EntitySchema<IParagraphTag>({
   name: "paragraph-tags",
   tableName: "paragraph-tags",
   columns: {
@@ -29,3 +31,9 @@ export const ParagraphTag = new EntitySchema({
     },
   },
 });
+
+export interface IParagraphTag {
+  id: number;
+  paragraph: IParagraph;
+  tag: ITag;
+}

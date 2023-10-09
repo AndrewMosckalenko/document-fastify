@@ -1,6 +1,17 @@
 import { EntitySchema } from "typeorm";
+import { IDocument } from "./document.entity";
+import { ITag } from "./tag.entity";
+import { IUserProject } from "./user_projects.entity";
 
-export const Project = new EntitySchema({
+export interface IProject {
+  id: number;
+  name: string;
+  documents: IDocument[];
+  tags: ITag[];
+  userProjects: IUserProject[];
+}
+
+export const Project = new EntitySchema<IProject>({
   name: "projects",
   tableName: "projects",
   columns: {
@@ -13,7 +24,6 @@ export const Project = new EntitySchema({
       type: "text",
       nullable: false,
       default: "untitled",
-      type: "text",
     },
   },
   relations: {

@@ -1,23 +1,30 @@
-import { DataSource } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import {
-  Document,
+  IDocument,
+  IParagraph,
+  IParagraphTag,
+  ITag,
+  IUser,
+  IUserProject,
+  IProject,
   Paragraph,
   ParagraphTag,
+  Project,
   Tag,
   User,
-  Project,
   UserProject,
+  Document,
 } from "../../entities";
 
-export let pgPool;
+export let pgPool: DataSource;
 
-export let projectRepository;
-export let documentRepository;
-export let tagRepository;
-export let paragraphRepository;
-export let userRepository;
-export let paragraphTagRepository;
-export let userProjectRepository;
+export let projectRepository: Repository<IProject>;
+export let documentRepository: Repository<IDocument>;
+export let tagRepository: Repository<ITag>;
+export let paragraphRepository: Repository<IParagraph>;
+export let userRepository: Repository<IUser>;
+export let paragraphTagRepository: Repository<IParagraphTag>;
+export let userProjectRepository: Repository<IUserProject>;
 
 export const createPgPool = async () => {
   pgPool = new DataSource({
@@ -43,7 +50,6 @@ export const createPgPool = async () => {
   await pgPool
     .initialize()
     .then(() => {
-      console.log("Data Source has been initialized!");
       projectRepository = pgPool.getRepository(Project);
       documentRepository = pgPool.getRepository(Document);
       tagRepository = pgPool.getRepository(Tag);
@@ -52,7 +58,7 @@ export const createPgPool = async () => {
       userProjectRepository = pgPool.getRepository(UserProject);
       paragraphTagRepository = pgPool.getRepository(ParagraphTag);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error("Error during Data Source initialization:", err);
     });
 };

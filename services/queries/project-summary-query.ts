@@ -1,6 +1,5 @@
-
-export const projectSummaryQuery = 
-'SELECT\
+export const projectSummaryQuery =
+  'SELECT\
       jsonb_build_object(\
         \'id\', document_id,\
         \'name\', document_name\

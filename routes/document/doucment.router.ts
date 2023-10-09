@@ -14,8 +14,8 @@ import {
   copyDocumentDesc,
 } from "./document.descriptor";
 
-export function documentRouter(fastify, opts, done) {
-  fastify.post("/:id", createDocumentDesc, (req, res) => {
+export function documentRouter(fastify: any, opts: any, done: any) {
+  fastify.post("/:id", createDocumentDesc, (req: any, res: any) => {
     (async () => {
       const response = await documentService.createDocument(
         req.params["id"],
@@ -26,46 +26,47 @@ export function documentRouter(fastify, opts, done) {
     })();
   });
 
-  fastify.post("/:id/copy", copyDocumentDesc, (req, res) => {
+  fastify.post("/:id/copy", copyDocumentDesc, (req: any, res: any) => {
     documentService.copyDocument(req.params["id"]).then((result) => {
       res.status(200).send(result);
     });
   });
-  fastify.get("", getDocumentsDesc, (_, res) => {
-    documentService.getDocuments().then((result) => {
+  fastify.get("", getDocumentsDesc, (_: any, res: any) => {
+    documentService.getDocuments().then((result: any) => {
       res.status(200).send(result);
     });
   });
 
-  fastify.get("/:id", getDocumentDesc, (req, res) => {
-    documentService.getDocumentById(req.params["id"]).then((result) => {
+  fastify.get("/:id", getDocumentDesc, (req: any, res: any) => {
+    documentService.getDocumentById(req.params["id"]).then((result: any) => {
       res.status(200).send(result);
     });
   });
 
-  fastify.get("/:id/paragraphs", getDocumentWithParagraphsDesc, (req, res) => {
-    documentService
-      .getDocumentWithParagraphsById(req.params["id"])
-      .then((result) => {
-        res.status(200).send(result);
-      });
-  });
+  fastify.get(
+    "/:id/paragraphs",
+    getDocumentWithParagraphsDesc,
+    (req: any, res: any) => {
+      documentService
+        .getDocumentWithParagraphsById(req.params["id"])
+        .then((result) => {
+          res.status(200).send(result);
+        });
+    },
+  );
 
-  fastify.patch("/:id", patchDocumentDesc, (req, res) => {
+  fastify.patch("/:id", patchDocumentDesc, (req: any, res: any) => {
     documentService
       .updateDocument({ ...req.body, id: req.params["id"] })
-      .then((result) => {
+      .then((result: any) => {
         res.status(200).send(result);
       });
   });
 
-  fastify.delete("/:id", deleteDocumentDesc, (req, res) => {
-    documentService
-      .deleteDocument(req.params["id"])
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((error) => errorHandler(res, error));
+  fastify.delete("/:id", deleteDocumentDesc, (req: any, res: any) => {
+    documentService.deleteDocument(req.params["id"]).then((result: any) => {
+      res.status(200).send(result);
+    });
   });
 
   done();

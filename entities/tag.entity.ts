@@ -1,6 +1,15 @@
 import { EntitySchema } from "typeorm";
+import { IParagraphTag } from "./paragraph-tag.entity";
+import { IProject } from "./project.entity";
 
-export const Tag = new EntitySchema({
+export interface ITag {
+  id: number;
+  title: string;
+  paragraphTags: IParagraphTag[];
+  project: IProject;
+}
+
+export const Tag = new EntitySchema<ITag>({
   name: "tags",
   tableName: "tags",
   columns: {
@@ -13,7 +22,6 @@ export const Tag = new EntitySchema({
       type: "text",
       nullable: false,
       default: "untitled",
-      type: "text",
     },
   },
   relations: {

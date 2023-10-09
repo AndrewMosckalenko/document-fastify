@@ -1,6 +1,14 @@
 import { EntitySchema } from "typeorm";
+import { IProject } from "./project.entity";
+import { IUser } from "./user.entity";
 
-export const UserProject = new EntitySchema({
+export interface IUserProject {
+  id: number;
+  user: IUser;
+  project: IProject;
+}
+
+export const UserProject = new EntitySchema<IUserProject>({
   name: "user-projects",
   tableName: "user-projects",
   columns: {

@@ -4,15 +4,19 @@ import { NotAuthException } from "../errors";
 import { userService } from "./user.service";
 
 export const authService = {
-  async signIn({ email, password }) {
+  async signIn({ email, password }: any) {
     try {
       const user = await userService.getUserByEmail(email);
 
-      if (user.password !== password || !user) throw new NotAuthException();
-
-      const token = await jwt.sign({ email }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE,
-      });
+      if (user?.password !== password || !user) throw new NotAuthException();
+      let token;
+      if (process.env.JWT_SECRET) {
+        token = await jwt.sign({ email }, process.env.JWT_SECRET, {
+          expiresIn: process.env.JWT_EXPIRE,
+        });
+      } else {
+        throw new NotAuthException();
+      }
 
       return {
         access_token: token,
@@ -22,15 +26,21 @@ export const authService = {
     }
   },
 
-  async signUp(newUser) {
+  async signUp(newUser: any) {
     try {
-      const user = await userService.createUser(newUser);
-
-      const token = await jwt.sign(
-        { email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRE },
-      );
+      await userService.createUser(newUser);
+      let token;
+      if (process.env.JWT_SECRET) {
+        token = await jwt.sign(
+          { email: newUser.email },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: process.env.JWT_EXPIRE,
+          },
+        );
+      } else {
+        throw new NotAuthException();
+      }
 
       return {
         access_token: token,

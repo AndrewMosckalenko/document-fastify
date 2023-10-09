@@ -1,6 +1,15 @@
 import { EntitySchema } from "typeorm";
+import { IParagraph } from "./paragraph.entity";
+import { IProject } from "./project.entity";
 
-export const Document = new EntitySchema({
+export interface IDocument {
+  id: number;
+  name: string;
+  paragraphs: IParagraph[];
+  project: IProject;
+}
+
+export const Document = new EntitySchema<IDocument>({
   name: "documents",
   tableName: "documents",
   columns: {
@@ -13,7 +22,6 @@ export const Document = new EntitySchema({
       type: "text",
       nullable: false,
       default: "untitled",
-      type: "text",
     },
   },
   relations: {

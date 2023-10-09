@@ -1,6 +1,8 @@
 import { EntitySchema } from "typeorm";
+import { IDocument } from "./document.entity";
+import { IParagraphTag } from "./paragraph-tag.entity";
 
-export const Paragraph = new EntitySchema({
+export const Paragraph = new EntitySchema<IParagraph>({
   name: "paragraphs",
   tableName: "paragraphs",
   columns: {
@@ -9,22 +11,15 @@ export const Paragraph = new EntitySchema({
       type: "int",
       generated: true,
     },
-    serial: {
-      type: "int",
-      nullable: false,
-      default: 0,
-    },
     name: {
       type: "text",
       nullable: false,
       default: "untitled",
-      type: "text",
     },
     content: {
       type: "text",
       nullable: false,
       default: "untitled",
-      type: "text",
     },
   },
   relations: {
@@ -56,3 +51,13 @@ export const Paragraph = new EntitySchema({
     },
   },
 });
+
+export interface IParagraph {
+  id: number;
+  name: string;
+  content: string;
+  document: IDocument;
+  paragraphTags: IParagraphTag[];
+  nextParagraph: IParagraph;
+  prevParagraph: IParagraph;
+}
