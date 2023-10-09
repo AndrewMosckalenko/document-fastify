@@ -13,8 +13,9 @@ export function authMiddleware(req: any, res: any, next: any) {
         console.log(req.user);
         next();
       });
+    } else {
+      throw new NotAuthException();
     }
-    throw new NotAuthException();
   } catch (e) {
     throw new NotAuthException();
   }
