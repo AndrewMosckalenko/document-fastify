@@ -1,22 +1,40 @@
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { authService } from "../../services";
 import { whoAmIDesc, signInDesc, signUpDesc } from "./user.descriptor";
 
-export function userRouter(fastify: any, opts: any, done: any) {
-  fastify.get("/whoami", whoAmIDesc, (request: any, reply: any) => {
-    reply.send(request.raw.user);
-  });
+export function userRouter(
+  fastify: FastifyInstance,
+  _opts: Object,
+  done: (err?: Error) => void,
+) {
+  fastify.get(
+    "/whoami",
+    whoAmIDesc,
+    (req: FastifyRequest, res: FastifyReply) => {
+      if ("user" in req.raw) res.send(req.raw.user);
+      else res.status(401);
+    },
+  );
 
-  fastify.post("/sign-in", signInDesc, (request: any, reply: any) => {
-    authService.signIn(request.body).then((res) => {
-      reply.send(res);
-    });
-  });
+  fastify.post(
+    "/sign-in",
+    signInDesc,
+    (req: FastifyRequest, res: FastifyReply) => {
+      authService.signIn(req.body).then((result) => {
+        res.send(result);
+      });
+    },
+  );
 
-  fastify.post("/sign-up", signUpDesc, (request: any, reply: any) => {
-    authService.signUp(request.body).then((res) => {
-      reply.send(res);
-    });
-  });
+  fastify.post(
+    "/sign-up",
+    signUpDesc,
+    (req: FastifyRequest, res: FastifyReply) => {
+      authService.signUp(req.body).then((result) => {
+        res.send(result);
+      });
+    },
+  );
 
   done();
 }

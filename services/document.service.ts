@@ -46,6 +46,7 @@ export const documentService = {
   },
 
   async createDocument(id: number, newDocument: CreateDocumentDTO, file: any) {
+    console.log(typeof file);
     const createdDocument = await documentRepository.insert({
       ...newDocument,
       project: { id },

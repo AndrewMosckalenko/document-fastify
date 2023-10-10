@@ -7,7 +7,7 @@ import { IParagraph, IParagraphTag } from "../entities";
 import { CreateParagraphDTO, UpdateParagraphDTO } from "./dtos/paragraph";
 
 export const paragraphService = {
-  getParagraph(id: any) {
+  getParagraph(id: number) {
     return paragraphRepository.findOneBy({ id });
   },
 

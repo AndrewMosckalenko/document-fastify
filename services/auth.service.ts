@@ -2,9 +2,10 @@ import jwt from "jsonwebtoken";
 
 import { NotAuthException } from "../errors";
 import { userService } from "./user.service";
+import { CreateUserDTO, SignInDTO } from "./dtos/user";
 
 export const authService = {
-  async signIn({ email, password }: any) {
+  async signIn({ email, password }: SignInDTO) {
     try {
       const user = await userService.getUserByEmail(email);
 
@@ -26,7 +27,7 @@ export const authService = {
     }
   },
 
-  async signUp(newUser: any) {
+  async signUp(newUser: CreateUserDTO) {
     try {
       await userService.createUser(newUser);
       let token;

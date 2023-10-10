@@ -5,4 +5,5 @@ export interface CreateParagraphDTO {
   content: string;
   document: { id: number };
   paragraphTags?: IParagraphTag[];
+  nextParagraphId?: number;
 }

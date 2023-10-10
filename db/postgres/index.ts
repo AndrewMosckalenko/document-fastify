@@ -58,7 +58,7 @@ export const createPgPool = async () => {
       userProjectRepository = pgPool.getRepository(UserProject);
       paragraphTagRepository = pgPool.getRepository(ParagraphTag);
     })
-    .catch((err: any) => {
+    .catch((err: unknown) => {
       console.error("Error during Data Source initialization:", err);
     });
 };
