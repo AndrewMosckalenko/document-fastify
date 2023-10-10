@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { authService } from "../../services";
 import { whoAmIDesc, signInDesc, signUpDesc } from "./user.descriptor";
+import { CreateUserDTO, SignInDTO } from "../../services/dtos/user";
 
 export function userRouter(
   fastify: FastifyInstance,
@@ -19,7 +20,7 @@ export function userRouter(
   fastify.post(
     "/sign-in",
     signInDesc,
-    (req: FastifyRequest, res: FastifyReply) => {
+    (req: FastifyRequest<{ Body: SignInDTO }>, res: FastifyReply) => {
       authService.signIn(req.body).then((result) => {
         res.send(result);
       });
@@ -29,7 +30,7 @@ export function userRouter(
   fastify.post(
     "/sign-up",
     signUpDesc,
-    (req: FastifyRequest, res: FastifyReply) => {
+    (req: FastifyRequest<{ Body: CreateUserDTO }>, res: FastifyReply) => {
       authService.signUp(req.body).then((result) => {
         res.send(result);
       });
