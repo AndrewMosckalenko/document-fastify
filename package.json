@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --experimental-specifier-resolution=node index.js",
+    "start": "nodemon --esm --experimental-specifier-resolution=node",
     "pretty": "npx prettier . --write"
   },
   "author": "Satchi",
@@ -17,6 +16,7 @@
     "@fastify/multipart": "^7.7.3",
     "@fastify/swagger": "^8.10.1",
     "@fastify/swagger-ui": "^1.9.3",
+    "@types/multer": "^1.4.8",
     "dotenv": "^16.3.1",
     "fastify": "^4.23.2",
     "fastify-multer": "^2.0.3",
@@ -26,7 +26,12 @@
     "typeorm": "^0.3.17"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.3",
+    "@types/node": "^20.8.2",
     "nodemon": "^3.0.1",
-    "prettier": "3.0.3"
+    "prettier": "3.0.3",
+    "ts-migrate": "^0.1.35",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   }
 }
