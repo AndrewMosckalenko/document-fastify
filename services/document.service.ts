@@ -4,7 +4,6 @@ import { HttpExceprtion } from "../errors";
 import { IParagraph } from "../entities";
 
 import { CreateDocumentDTO, UpdateDocumentDTO } from "./dtos/document";
-import { MultipartFile } from "@fastify/multipart";
 
 export const documentService = {
   getDocuments() {
@@ -46,16 +45,19 @@ export const documentService = {
     return { ...document, paragraphs };
   },
 
-  async createDocument(id: number, newDocument: CreateDocumentDTO, file?: Object) {
-    console.log(file)
+  async createDocument(
+    id: number,
+    newDocument: CreateDocumentDTO,
+    file?: Object,
+  ) {
     const createdDocument = await documentRepository.insert({
       ...newDocument,
       project: { id },
-    });      
+    });
     const newDocumentId = createdDocument.raw[0].id;
 
-    if (file && 'data' in file && typeof file.data === 'string') {
-      const newParagraphs = file.data.toString().split("\n"); 
+    if (file && "data" in file && file.data) {
+      const newParagraphs = file.data.toString().split("\n");
       for (const content of newParagraphs) {
         await paragraphService.createParagraph({
           content,
@@ -79,12 +81,9 @@ export const documentService = {
   async copyDocument(id: number) {
     const originDocument = await this.getDocumentWithParagraphsById(id);
 
-    const newDocument = await this.createDocument(
-      originDocument.project.id,
-      {
-        name: originDocument.name + "-copy",
-      },
-    );
+    const newDocument = await this.createDocument(originDocument.project.id, {
+      name: originDocument.name + "-copy",
+    });
     const newDocumentId = newDocument.raw[0].id;
 
     for (const paragraph of originDocument.paragraphs) {

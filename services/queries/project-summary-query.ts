@@ -22,7 +22,7 @@ export const projectSummaryQuery =
       FROM documents\
       full outer join "tags" on "tags"."project_id" = "documents"."project_id"\
       left join "paragraph-tags" on "paragraph-tags"."tag_id" = "tags"."id"\
-      left join "paragraphs" on "paragraphs"."id" = "paragraph-tags"."paragraph_id"\
+      left join "paragraphs" on ("paragraphs"."id" = "paragraph-tags"."paragraph_id" and (documents.id = paragraphs.document_id OR "paragraph-tags".id IS NULL))\
       where "documents"."project_id" = $1\
       group by documents.id, tags.id) t\
       group by document_id, document_name;';
