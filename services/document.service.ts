@@ -48,7 +48,7 @@ export const documentService = {
   async createDocument(
     id: number,
     newDocument: CreateDocumentDTO,
-    file?: Object,
+    file?: File,
   ) {
     const createdDocument = await documentRepository.insert({
       ...newDocument,
