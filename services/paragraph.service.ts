@@ -5,6 +5,7 @@ import { paragraphTagService } from "./paragraph-tag.service";
 import { IParagraph, IParagraphTag } from "../entities";
 
 import { CreateParagraphDTO, UpdateParagraphDTO } from "./dtos/paragraph";
+import { HttpExceprtion } from "../errors";
 
 export const paragraphService = {
   getParagraph(id: number) {
@@ -75,5 +76,42 @@ export const paragraphService = {
 
   deleteParagraph(id: number) {
     return paragraphRepository.delete({ id });
+  },
+
+  getParagraphByDocument(documentId: number) {
+    return paragraphRepository.find({
+      where: { document: { id: documentId } },
+      relations: ["paragraphTags", "paragraphTags.tag"],
+    });
+  },
+
+  getParagraphsByTag(tagId: number) {
+    return paragraphRepository.find({
+      where: { paragraphTags: { tag: { id: tagId } } },
+      relations: ["paragraphTags", "paragraphTags.tag"],
+    });
+  },
+
+  getParagraphsByTagAndDocument(documentId: number, tagId: number) {
+    return paragraphRepository.find({
+      where: {
+        paragraphTags: { tag: { id: tagId } },
+        document: { id: documentId },
+      },
+      relations: ["paragraphTags", "paragraphTags.tag"],
+    });
+  },
+
+  getParagraphsForSummaryTable(documentId: number, tagId: number) {
+    if (documentId && tagId) {
+      return this.getParagraphsByTagAndDocument(documentId, tagId);
+    }
+    if (documentId) {
+      return this.getParagraphByDocument(documentId);
+    }
+    if (tagId) {
+      return this.getParagraphsByTag(tagId);
+    }
+    throw new HttpExceprtion("Bad request", 400);
   },
 };
