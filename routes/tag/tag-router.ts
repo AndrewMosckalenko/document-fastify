@@ -14,7 +14,7 @@ export function tagRouter(
       res: FastifyReply,
     ) => {
       tagService
-        .createTag({ ...req.body, project: { id: req.params["id"] } })
+        .createAndApplyTag({ ...req.body, project: { id: req.params["id"] } })
         .then((result) => {
           res.send(result);
         });
