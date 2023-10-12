@@ -4,16 +4,18 @@ import { CreateTagDTO } from "./dtos/tag";
 import { paragraphTagService } from "./paragraph-tag.service";
 
 export const tagService = {
-  async createTag(newTag: CreateTagDTO) {
-    if (newTag.paragraphId) {
-      const tagId = await tagRepository.insert(newTag);
+  createTag(newTag: CreateTagDTO) {
+    return tagRepository.insert(newTag);
+  },
 
+  async createAndApplyTag(newTag: CreateTagDTO) {
+    if (newTag.paragraphId) {
+      const tagId = await this.createTag(newTag);
       return paragraphTagService.addTagForParagraph(
         tagId.raw[0].id,
         newTag.paragraphId,
       );
     }
-
     throw new HttpExceprtion("Bad request", 400);
   },
 
