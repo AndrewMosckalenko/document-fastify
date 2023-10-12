@@ -26,6 +26,24 @@ export function paragraphRouter(
         });
     },
   );
+  fastify.get(
+    "/",
+    (
+      req: FastifyRequest<{
+        Querystring: { documentId: number; tagId: number };
+      }>,
+      res: FastifyReply,
+    ) => {
+      paragraphService
+        .getParagraphsForSummaryTable(
+          Number(req.query.documentId),
+          Number(req.query.tagId),
+        )
+        .then((result) => {
+          res.send(result);
+        });
+    },
+  );
   fastify.patch(
     "/:id",
     (

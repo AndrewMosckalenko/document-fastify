@@ -24,6 +24,9 @@ export const tagService = {
   },
 
   getTagByProjectId(id: number) {
-    return tagRepository.findBy({ project: { id } });
+    return tagRepository.find({
+      where: { project: { id } },
+      order: { id: "ASC" },
+    });
   },
 };
